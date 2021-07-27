@@ -1,14 +1,9 @@
-dist: trusty
-sudo: false
 language: cpp
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-8
+os:
+  - linux
+  - windows
 
 script:
-  - CXX=/usr/bin/g++-8 CC=/usr/bin/gcc-8 cmake .
+  - cmake .
   - cmake --build . -- -j2
