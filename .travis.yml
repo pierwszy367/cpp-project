@@ -15,8 +15,11 @@ jobs:
     
     - os: windows
       before_script:
-        #- choco install visualstudio2019buildtools
-        - choco install visualstudio2019community
+        # - choco install visualstudio2019buildtools
+        - choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+        - ls /c/
+        # - choco install visualstudio2019community
+        # - choco install visualstudio2019-workload-nativedesktop
         - export VS160COMNTOOLS="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
       script:
         - cmake .
