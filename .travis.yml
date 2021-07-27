@@ -1,9 +1,23 @@
 language: cpp
 
-os:
-  - linux
-  - windows
-
-script:
-  - cmake .
-  - cmake --build . -- -j2
+jobs:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      script:
+        - cmake .
+        - cmake --build . -- -j2
+    
+    - os: windows
+      before_script:
+        - choco install visualstudio2019buildtools
+        - msbuild /version
+        - where msbuild
+      script:
+        - cmake .
+        - cmake --build .
