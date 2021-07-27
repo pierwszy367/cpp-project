@@ -16,8 +16,8 @@ jobs:
     - os: windows
       before_script:
         - choco install visualstudio2019buildtools
-        - msbuild.exe //version
-        - where msbuild.exe
+        - export VS160COMNTOOLS="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
+        - ls -R "/c/Program Files (x86)/Microsoft Visual Studio/2019/Community"
       script:
         - cmake .
         - cmake --build .
