@@ -2,22 +2,25 @@ language: cpp
 
 jobs:
   include:
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
-      script:
-        - CXX=/usr/bin/g++-8 CC=/usr/bin/gcc-8 cmake .
-        - cmake --build . -- -j2
+    # - os: linux
+    #   addons:
+    #     apt:
+    #       sources:
+    #         - ubuntu-toolchain-r-test
+    #       packages:
+    #         - g++-8
+    #   script:
+    #     - CXX=/usr/bin/g++-8 CC=/usr/bin/gcc-8 cmake .
+    #     - cmake --build . -- -j2
     
     - os: windows
       before_script:
         # - choco install visualstudio2019buildtools
         - choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
         - ls /c/
+        - ls "/c/Program Files (x86)/"
+        - ls "/c/Program Files (x86)/Microsoft Visual Studio/"
+        - ls "/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
         # - choco install visualstudio2019community
         # - choco install visualstudio2019-workload-nativedesktop
         - export VS160COMNTOOLS="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
