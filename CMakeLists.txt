@@ -10,3 +10,7 @@ endif()
 
 add_executable(cpp_project main.cpp)
 target_compile_features(cpp_project PRIVATE cxx_lambda_init_captures)
+
+enable_testing()
+add_executable(tester tester.cpp)
+add_test(Tester tester)

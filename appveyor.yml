@@ -11,5 +11,8 @@ build_script:
      cmake c:\project\source -G "Visual Studio 16 2019"
      cmake --build . --config "Debug"
 
+test_script:
+  - cmd: ctest -C Debug
+
 artifacts:
   - path: build/Debug/cpp_project.exe

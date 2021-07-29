@@ -12,6 +12,7 @@ jobs:
       script:
         - CXX=/usr/bin/g++-8 CC=/usr/bin/gcc-8 cmake .
         - cmake --build . -- -j2
+        - ctest -j2
     
     - os: windows
       before_script:
@@ -26,3 +27,4 @@ jobs:
       script:
         - cmake .
         - cmake --build .
+        - ctest
