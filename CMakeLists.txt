@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.9)
 
 project(cpp_project)
 
+option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" FALSE)
+
 if (CMAKE_COMPILER_IS_GNUCC)
     option(ENABLE_COVERAGE "Enable coverage reporting for gcc" FALSE)
     
@@ -11,18 +13,114 @@ if (CMAKE_COMPILER_IS_GNUCC)
 endif()
 
 
+add_library(project_warnings INTERFACE)
+
 if (MSVC)
-    add_compile_options(/W4)
+    target_compile_options(project_warnings INTERFACE /W4)
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    target_compile_options(project_warnings
+                           INTERFACE
+                           -Wall
+                           -Wextra # reasonable and standard
+                        #    -Wshadow # warn the user if a variable declaration shadows one from a parent context
+                        #    -Wnon-virtual-dtor # warn the user if a class with virtual functions has a non-virtual destructor.
+                        #                       # This helps catch hard to track down memory errors
+                        #    -Wold-style-cast # warn for c-style casts
+                        #    -Wcast-align # warn for potential performance problem casts
+                        #    -Wunused # warn on anything being unused
+                        #    -Woverloaded-virtual # warn if you overload (not override) a virtual function
+                        #    -Wpedantic # warn if non-standard C++ is used
+                        #    -Wconversion # warn on type conversions that may lose data
+                        #    -Wsign-conversion # warn on sign conversions
+                        #    -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
+                        #    -Wduplicated-cond # warn if if/else chain has duplicated conditions
+                        #    -Wduplicated-branches # warn if if/else branches have duplicated code
+                        #    -Wlogical-op # warn about logical operations being used where bitwise were probably wanted
+                        #    -Wnull-dereference # warn if a null dereference is detected
+                        #    -Wuseless-cast # warn if you perform a cast to the same type 
+                        #    -Wdouble-promotion # warn if float is implicit promoted to double
+                        #    -Wformat=2 # warn on security issues around functions that format output (ie printf)
+                           )
 endif()
 
 add_executable(cpp_project main.cpp)
-target_compile_features(cpp_project PRIVATE cxx_lambda_init_captures)
-target_link_libraries(cpp_project --coverage)
+target_compile_features(cpp_project PRIVATE cxx_std_17)
+target_link_libraries(cpp_project PRIVATE project_warnings --coverage)
 
 enable_testing()
 add_executable(tester tester.cpp)
-target_link_libraries(tester --coverage)
+target_link_libraries(tester PRIVATE project_warnings --coverage)
 add_test(Tester tester)
 
+
+# fltk
+# find_package(FLTK REQUIRED)
+# add_executable(test_fltk fltk/main.cpp)
+# target_link_libraries(test_fltk PRIVATE project_warnings ${FLTK_LIBRARIES})
+# target_include_directories(test_fltk PRIVATE ${FLTK_INCLUDE_DIR})
+
+
+# gtkmm
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(GTKMM REQUIRED gtkmm-3.0) # if it doesn't find configs set PKG_CONFIG_PATH in console
+# add_executable(test_gtkmm gtkmm/main.cpp gtkmm/helloworld.cpp)
+# target_link_libraries(test_gtkmm PRIVATE project_warnings ${GTKMM_LIBRARIES})
+# target_include_directories(test_gtkmm PRIVATE ${GTKMM_INCLUDE_DIRS})
+
+
+# imgui - opengl + glfw
+# find_package(OpenGL)
+# find_package(GLFW3)
+
+# add_library(imgui_gl 
+#             imgui/lib/imgui.cpp 
+#             imgui/lib/imgui_draw.cpp 
+#             imgui/lib/imgui_widgets.cpp 
+#             imgui/lib/imgui_tables.cpp 
+#             imgui/lib/imgui_demo.cpp
+#             imgui/lib/imgui_impl_opengl3.cpp
+#             imgui/lib/imgui_impl_glfw.cpp
+#             )
+# target_link_libraries(imgui_gl INTERFACE OpenGL::GL ${GLFW3_LIBRARY})
+# target_include_directories(imgui_gl PUBLIC ${GLFW3_INCLUDE_DIR})
+
+# add_executable(test_imgui_gl imgui/imgui_gl.cpp)
+# target_link_libraries(test_imgui_gl PRIVATE project_warnings imgui_gl)
+# target_include_directories(test_imgui_gl PRIVATE ${GLFW3_INCLUDE_DIR})
+
+
+# imgui - sfml
+# find_package(SFML COMPONENTS graphics window system)
+# find_package(OpenGL)
+
+# add_library(imgui_sfml 
+#             imgui/lib/imgui.cpp 
+#             imgui/lib/imgui_draw.cpp 
+#             imgui/lib/imgui_widgets.cpp 
+#             imgui/lib/imgui_tables.cpp 
+#             imgui/lib/imgui-SFML.cpp
+#             )
+# target_link_libraries(imgui_sfml INTERFACE ${SFML_LIBRARIES} ${OPENGL_gl_LIBRARY})
+# target_include_directories(imgui_sfml PRIVATE ${SFML_INCLUDE_DIR} imgui/lib)
+
+# add_executable(test_imgui_sfml imgui/imgui_sfml.cpp)
+# target_link_libraries(test_imgui_sfml PRIVATE project_warnings imgui_sfml)
+# target_include_directories(test_imgui_sfml PRIVATE ${SFML_INCLUDE_DIR})
+
+
+# nana
+# include(ExternalProject)
+# ExternalProject_Add(
+#     nana
+#     GIT_REPOSITORY   https://github.com/cnjinhao/nana.git
+#     GIT_TAG          v1.7.3
+#     CMAKE_CACHE_ARGS
+#         -DNANA_CMAKE_NANA_FILESYSTEM_FORCE:BOOL=ON
+#     INSTALL_COMMAND  ""
+# )
+# ExternalProject_Get_Property(nana SOURCE_DIR BINARY_DIR)
+
+# add_executable(test_nana nana/main.cpp)
+# target_compile_options(test_nana PRIVATE -DNANA_FILESYSTEM_FORCE)
+# target_include_directories(test_nana PRIVATE ${SOURCE_DIR}/include)
+# target_link_libraries(test_nana PRIVATE ${BINARY_DIR}/libnana.a)
