@@ -1,9 +1,9 @@
 // https://github.com/eliasdaler/imgui-sfml
 // https://github.com/eliasdaler/imgui-sfml/blob/master/examples/main.cpp
 
-#include "lib/imgui.h" // necessary for ImGui::*, imgui-SFML.h doesn't include imgui.h
+#include "imgui.h" // necessary for ImGui::*, imgui-SFML.h doesn't include imgui.h
 
-#include "lib/imgui-SFML.h" // for ImGui::SFML::* functions and SFML-specific overloads
+#include "imgui-SFML.h" // for ImGui::SFML::* functions and SFML-specific overloads
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
