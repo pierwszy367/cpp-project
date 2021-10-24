@@ -4,10 +4,8 @@ option(CPP_PROJECT_USE_IMGUI_GL "Enable compilation of ImGui (OpenGL + GLFW) sam
 option(CPP_PROJECT_USE_IMGUI_SFML "Enable compilation of ImGui (SFML) sample" OFF)
 option(CPP_PROJECT_USE_NANA "Enable compilation of Nana GUI sample" OFF)
 
-
 add_executable(main main.cpp)
 target_link_libraries(main PRIVATE project_options project_warnings)
-
 
 # fltk
 if(CPP_PROJECT_USE_FLTK)
@@ -16,7 +14,6 @@ if(CPP_PROJECT_USE_FLTK)
     target_include_directories(test_fltk SYSTEM PRIVATE ${FLTK_INCLUDE_DIR})
     target_link_libraries(test_fltk PRIVATE project_options project_warnings ${FLTK_LIBRARIES})
 endif()
-
 
 # gtkmm
 if(CPP_PROJECT_USE_GTKMM)
@@ -27,21 +24,21 @@ if(CPP_PROJECT_USE_GTKMM)
     target_link_libraries(test_gtkmm PRIVATE project_options project_warnings ${GTKMM_LIBRARIES})
 endif()
 
-
 # imgui - opengl + glfw
 if(CPP_PROJECT_USE_IMGUI_GL)
     find_package(OpenGL)
     find_package(GLFW3)
 
-    add_library(imgui_gl 
-                imgui/lib/imgui.cpp 
-                imgui/lib/imgui_draw.cpp 
-                imgui/lib/imgui_widgets.cpp 
-                imgui/lib/imgui_tables.cpp 
-                imgui/lib/imgui_demo.cpp
-                imgui/lib/imgui_impl_opengl3.cpp
-                imgui/lib/imgui_impl_glfw.cpp
-                )
+    add_library(
+        imgui_gl
+        imgui/lib/imgui.cpp
+        imgui/lib/imgui_draw.cpp
+        imgui/lib/imgui_widgets.cpp
+        imgui/lib/imgui_tables.cpp
+        imgui/lib/imgui_demo.cpp
+        imgui/lib/imgui_impl_opengl3.cpp
+        imgui/lib/imgui_impl_glfw.cpp
+    )
     target_include_directories(imgui_gl PRIVATE imgui/lib ${GLFW3_INCLUDE_DIR})
     target_link_libraries(imgui_gl INTERFACE OpenGL::GL ${GLFW3_LIBRARY})
 
@@ -50,19 +47,19 @@ if(CPP_PROJECT_USE_IMGUI_GL)
     target_link_libraries(test_imgui_gl PRIVATE project_options project_warnings imgui_gl)
 endif()
 
-
 # imgui - sfml
 if(CPP_PROJECT_USE_IMGUI_SFML)
     find_package(SFML COMPONENTS graphics window system)
     find_package(OpenGL)
 
-    add_library(imgui_sfml 
-                imgui/lib/imgui.cpp 
-                imgui/lib/imgui_draw.cpp 
-                imgui/lib/imgui_widgets.cpp 
-                imgui/lib/imgui_tables.cpp 
-                imgui/lib/imgui-SFML.cpp
-                )
+    add_library(
+        imgui_sfml
+        imgui/lib/imgui.cpp
+        imgui/lib/imgui_draw.cpp
+        imgui/lib/imgui_widgets.cpp
+        imgui/lib/imgui_tables.cpp
+        imgui/lib/imgui-SFML.cpp
+    )
     target_include_directories(imgui_sfml PRIVATE ${SFML_INCLUDE_DIR} imgui/lib)
     target_link_libraries(imgui_sfml INTERFACE ${SFML_LIBRARIES} ${OPENGL_gl_LIBRARY})
 
@@ -71,19 +68,17 @@ if(CPP_PROJECT_USE_IMGUI_SFML)
     target_link_libraries(test_imgui_sfml PRIVATE project_options project_warnings imgui_sfml)
 endif()
 
-
 # nana
 if(CPP_PROJECT_USE_NANA)
     include(ExternalProject)
-    ExternalProject_Add(
+    externalproject_add(
         nana
-        GIT_REPOSITORY   https://github.com/cnjinhao/nana.git
-        GIT_TAG          v1.7.3
-        CMAKE_CACHE_ARGS
-            -DNANA_CMAKE_NANA_FILESYSTEM_FORCE:BOOL=ON
-        INSTALL_COMMAND  ""
+        GIT_REPOSITORY https://github.com/cnjinhao/nana.git
+        GIT_TAG v1.7.3
+        CMAKE_CACHE_ARGS -DNANA_CMAKE_NANA_FILESYSTEM_FORCE:BOOL=ON
+        INSTALL_COMMAND ""
     )
-    ExternalProject_Get_Property(nana SOURCE_DIR BINARY_DIR)
+    externalproject_get_property(nana SOURCE_DIR BINARY_DIR)
 
     add_executable(test_nana nana/main.cpp)
     target_compile_options(test_nana PRIVATE -DNANA_FILESYSTEM_FORCE)

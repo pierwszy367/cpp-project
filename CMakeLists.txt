@@ -16,7 +16,7 @@ set_project_warnings(project_warnings)
 
 add_subdirectory(src)
 
-if (ENABLE_TESTING)
+if(ENABLE_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()
